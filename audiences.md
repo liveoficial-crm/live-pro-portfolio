@@ -1,21 +1,23 @@
-# Serviço de Audiências
+# Resumo do Projeto - Serviço de Audiências
 
-## Painel
+## Visão Geral
+Sistema para gerenciamento de audiências (listas de contatos) com interface de painel administrativo e API REST.
 
-### /audiences
-- [x] Tabela contendo metadados sobre a audiência: 
-<br>`Nome`, `Contatos`, `Data de Criação`, `Data de Atualização`.
-- [ ] Operações de deletar realizam um soft-delete na tabela `public.audiences`.
-  <br><sup>**Lógica de limpeza dentro do MongoDB precisa de uma análise melhor e alinhamento sobre o uso das audiências.**</sup>
+## Funcionalidades Principais
 
-### /audiences/{id}
-- [ ] Permitir renomear a lista.
+### 📊 Painel Administrativo
 
-### /audiences/recycle
-- [ ] Verificar exclusão de itens durante a reciclagem de uma audiência, atualmente trava quando tenta excluir mais de 10mil linhas.
+**Listagem de Audiências** (`/audiences`)
+- Exibe tabela com metadados: Nome, Contatos, Data de Criação e Atualização
+- Implementa soft-delete (registros não são removidos permanentemente)
+- ⚠️ Lógica de limpeza no MongoDB precisa de revisão
 
-### Melhorias Gerais:
-- [ ] Criar processo de notificação durante criação / reciclagem de audiencias, invés de utilizar o processo sincrono atual trocar para um processo assincrono que roda em background após o usuário confirmar uma operação. Após concluir a operação enviar a ele uma notificação no filament de que sua audiencia foi processada.
+**Detalhes da Audiência** (`/audiences/{id}`)
+- Visualização individual de audiências
+- Funcionalidade de renomeação (planejada)
+
+**Reciclagem** (`/audiences/recycle`)
+- ⚠️ Limitação atual: trava ao excluir mais de 10 mil linhas
 
 ## API
 **Apenas audiências criadas via API podem ser alteradas via os comandos abaixo.**
