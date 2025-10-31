@@ -17,6 +17,7 @@ Sistema para gerenciamento de audiências (listas de contatos) com interface de 
 - Funcionalidade de renomeação (planejada)
 
 **Reciclagem** (`/audiences/recycle`)
+- Funcionalidade permite selecionar uma Audiencia existente permitindo ajustar parametros e reutiliza-la para outra finalidade.
 - ⚠️ Limitação atual: trava ao excluir mais de 10 mil linhas
 
 ## API
