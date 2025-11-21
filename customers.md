@@ -13,7 +13,7 @@
 ## Validação de Payload:
 ### Campos Obrigatórios para Chaveamento
 
-A validação inicial do payload sempre deve conter o nome do sistema de origem e deve verificar a presença dos seguintes campos obrigatórios **nesta ordem de prioridade**:
+Na validação inicial o payload sempre deve conter o nome do sistema de origem, evento de origem e verificar a presença de pelo menos um dos seguintes campos obrigatórios que será definido como a **key** do registro **nesta ordem de prioridade**:
 1. **Documento**
 2. **Telefone**
 3. **Email**
