@@ -25,7 +25,7 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 {
 	"data": {
 	"source": "E-commerce|Cigam|Omnichat|Zendesk...",
-	"interaction_type": "Purchase|Exchange|Lead",
+	"interaction_type": "Purchase|Exchange|Lead...",
 	"name": "Nome Completo",
 	"document": "CPF/CNPJ",
 	"phone": "DDD + número",
@@ -60,7 +60,7 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 	},
 	"metadata": {
 		"source": "E-commerce|Cigam|Omnichat|Zendesk...",
-		"interaction_type": "Purchase|Exchange|Lead",
+		"interaction_type": "Purchase|Exchange|Lead...",
 		"interacted_at": "2025-11-01T11:47:21.000+00:00"
 	},
 }
