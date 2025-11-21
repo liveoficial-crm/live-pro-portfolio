@@ -24,7 +24,7 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 ```json
 {
 	"data": {
-	"source": "E-commerce|Cigam|Omnichat|Zendesk",
+	"source": "E-commerce|Cigam|Omnichat|Zendesk...",
 	"interaction_type": "Purchase|Exchange|Lead",
 	"name": "Nome Completo",
 	"document": "CPF/CNPJ",
