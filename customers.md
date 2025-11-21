@@ -35,7 +35,7 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 		"profession": "Painter",
 		"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
 		// Outros campos adicionais...
-	  }
+  }
 }
 ```
 
