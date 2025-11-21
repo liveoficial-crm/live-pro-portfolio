@@ -24,18 +24,18 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 ```json
 {
 	"data": {
-	"source": "E-commerce|Cigam|Omnichat|Zendesk...",
-	"interaction_type": "Purchase|Exchange|Lead...",
-	"name": "Nome Completo",
-	"document": "CPF/CNPJ",
-	"phone": "DDD + número",
-	"email": "endereço@email.com",
-	"birthday": "2001/07/04",
-	"gender": "M",
-	"profession": "Painter",
-	"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
-	// Outros campos adicionais...
-  }
+		"source": "E-commerce|Cigam|Omnichat|Zendesk...",
+		"interaction_type": "Purchase|Exchange|Lead...",
+		"name": "Nome Completo",
+		"document": "CPF/CNPJ",
+		"phone": "DDD + número",
+		"email": "endereço@email.com",
+		"birthday": "2001/07/04",
+		"gender": "M",
+		"profession": "Painter",
+		"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
+		// Outros campos adicionais...
+	  }
 }
 ```
 
