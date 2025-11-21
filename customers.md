@@ -19,14 +19,57 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 3. **Email**
 4. **nome**
 
+### Exemplo Estrutura
+**Payload de entrada na API:**
+```json
+{
+	"data": {
+	"source": "E-commerce|Cigam|Omnichat|Zendesk",
+	"interaction_type": "Purchase|Exchange|Lead",
+	"name": "Nome Completo",
+	"document": "CPF/CNPJ",
+	"phone": "DDD + número",
+	"email": "endereço@email.com",
+	"birthday": "2001/07/04",
+	"gender": "M",
+	"profession": "Painter",
+	"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
+	// Outros campos adicionais...
+  }
+}
+```
+
+**Registro ordenado no banco:**
+```json
+{
+	"_id": "691cbc55faa197f9263490a4", // Auto Gerado
+	"key": "documento|telefone|email",
+	"data": {
+		"document": "CPF/CNPJ",
+		"phone": "número",
+		"email": "endereço@email.com",
+
+		"additional_fields": {
+			"name": "Nome Completo",
+			"birthday": "2001/07/04",
+			"gender": "M",
+			"profession": "Painter",
+			"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
+			// Outros campos adicionais...
+		}
+	},
+  "metadata": {
+    "source": "E-commerce|Cigam|Omnichat|Zendesk...",
+    "interaction_type": "Purchase|Exchange|Lead",
+		"interacted_at": "2025-11-01T11:47:21.000+00:00"
+  },
+}
+```
+
 #### Lógica de Validação.
-- Os campos devem ser validados na ordem listada acima.
-- O primeiro campo válido encontrado definirá a **main key** do registro.
+- O payload deve conter pelo menos um dos campos obrigatórios que serão validados pela ordem listada acima, o primeiro campo válido encontrado definirá a **key** do registro.
 - Caso nenhum dos campos obrigatórios seja encontrado, o payload será marcado como **inválido**.
-
-#### Processamento Pós-Validação e Registro no Histórico
-
-- Após a validação inicial, **campos adicionais** no payload podem ser livremente registrados na API de histórico do sistema, nessa etapa os dados entram "sujos".
+- **campos adicionais** no payload podem ser livremente registrados na API de histórico do sistema, nessa etapa os dados entram "sujos".
 
 #### Criação de Task para Workers
 - Após a criação será automaticamente criada uma task direcionada aos workers do serviço
@@ -91,12 +134,12 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
 - **Match por Telefone**: Consolidação baseada em números de telefone
 - **Match por Email**: Unificação através de endereços de email
 - **Fuzzy Matching**: Algoritmos para casos aproximados e similares
-
-### Estrutura da Ficha Consolidada
+<!-- 
+### Exemplo Ficha Consolidada
 ```json
 {
-  "main_key": "documento|telefone|email",
-  "dados_pessoais": {
+  
+  "data": {
     "nome": "Nome Completo",
     "documento": "CPF/CNPJ",
     "telefone": "DDD + número",
@@ -113,7 +156,7 @@ A validação inicial do payload sempre deve conter o nome do sistema de origem 
   "ultima_atualizacao": "2025-11-20T19:11:33Z",
   "score_engajamento": 0.85
 }
-```
+``` -->
 
 ### Resolução de Conflitos
 - **Prioridade de Dados**: Estratégia para dados conflitantes entre fontes
