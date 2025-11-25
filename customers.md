@@ -1,84 +1,187 @@
 # Projeto de experiência e jornada do cliente:
 
 ## Etapas Projeto:
-- **1 - Histórico Consolidado (mongoDB)**
+
+### Etapa atual:
+- **1 - Histórico Consolidado**
+
+**Próximas Etapas:**
 - **2 - Criação da Fila**
 - **3 - Leitura e Tratamento dos dados**
 - **4 - Consolidação da ficha unificada**
 - **5 - Método de validação**
 - **6 - Sincronização em todos os sistemas**
 
-# 1° Etapa - Histórico Consolidado e Fila Inicial
 
-## Validação de Payload:
-### Campos Obrigatórios para Chaveamento
+## 1° Etapa - Histórico Consolidado e Fila Inicial
 
-Na validação inicial o payload sempre deve conter o **nome do sistema de origem**, **interação de origem** e a presença de pelo menos um dos seguintes campos obrigatórios que será definido como a **key** do registro **nesta ordem de prioridade**:
-1. **Documento**
-2. **Telefone**
-3. **Email**
-4. **nome**
+### Validação de Payload
 
-### Exemplo Estrutura
-**Payload de entrada na API:**
+#### Campos Obrigatórios para Chaveamento
+
+Na validação inicial, o payload deve obrigatoriamente conter:
+- **Sistema de origem** (`source`)
+- **Tipo de interação** (`interaction_type`) 
+
+**Pelo menos um dos seguintes campos prioritários** (definirá a chave do registro), **Ordem de Prioridade (do mais alto ao mais baixo):**
+1. **Documento** - Documento Internacionalizado dos clientes (Prioridade Máxima)
+2. **Celular** - DDI + DDD + número (sempre usar "phone", nunca "telefone")
+3. **Email** - endereço de email válido
+4. **Nome** - Nome completo (Fallback - apenas para ter registro básico)
+
+> ⚠️ **Importante:** Nome **NUNCA** pode ser usado como chave principal. Ele serve apenas como fallback para identificar que existiu um registro quando nenhum outro campo estiver disponível.
+
+#### Estrutura do Payload
+
+**Exemplo Payload de entrada na API:**
 ```json
 {
-	"data": {
-		"source": "E-commerce|Cigam|Omnichat|Zendesk...",
-		"interaction_type": "Purchase|Exchange|Lead...",
-		"name": "Nome Completo",
-		"document": "CPF/CNPJ",
-		"phone": "DDD + número",
-		"email": "endereço@email.com",
-		"birthday": "2001/07/04",
-		"gender": "M",
-		"profession": "Painter",
-		"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
-		// Outros campos adicionais...
+  "data": {
+    "source": "e-commerce|cigam|omnichat|zendesk",
+    "interaction_type": "purchase|exchange|lead|other",
+    "document": "703.345.961-06", // Pode vir tratado ou não api irá tratar depois
+    "phone": "+55 (47) 99999-9999", // Pode vir tratado ou não api irá tratar depois
+    "email": "email@email.com",
+    "nome": "José Silva",
+    "birthday": "2001/07/04",
+    "gender": "M",
+    "profession": "Painter",
+    "address": "Av Paraná, 370 - Centro, Lucas do Rio Verde, MT, Brasil - 78455-000"
+    // Outros campos adicionais...
   }
 }
 ```
 
-**Registro ordenado no banco:**
+**Registro armazenado no banco:**
 ```json
 {
-	"_id": "691cbc55faa197f9263490a4", // Auto Gerado
-	"key": "documento|telefone|email",
-	"data": {
-		"document": "CPF/CNPJ",
-		"phone": "número",
-		"email": "endereço@email.com",
+  "_id": "691cbc55faa197f9263490a4", // Auto-gerado pelo MongoDB
+  "key": "document|phone|email",
+  "data": {
+    "document": "70334596106",
+    "phone": "5547999999999", 
+    "email": "email@email.com",
+    
+    "additional_fields": {
+      "nome": "José Silva",
+      "birthday": "2001-07-04",
+      "gender": "M",
+      "profession": "Painter",
+      "address": "Av Paraná, 370 - Centro, Lucas do Rio Verde, MT, Brasil - 78455-000"
+    }
+  },
 
-		"additional_fields": {
-			"name": "Nome Completo",
-			"birthday": "2001/07/04",
-			"gender": "M",
-			"profession": "Painter",
-			"address": "Av Parana, 370 - Centro, Lucas do Rio Verde, Mato Grosso, Brasil - 78455-000",
-			// Outros campos adicionais...
-		}
-	},
-	"metadata": {
-		"source": "E-commerce|Cigam|Omnichat|Zendesk...",
-		"interaction_type": "Purchase|Exchange|Lead...",
-		"interacted_at": "2025-11-01T11:47:21.000+00:00"
-	},
+  "metadata": {
+    "source": "e-commerce|cigam|omnichat|zendesk",
+    "interaction_type": "purchase|exchange|lead|other",
+    "interacted_at": "2025-11-01T11:47:21.000+00:00"
+  }
 }
 ```
 
-#### Lógica de Validação.
-- O payload deve conter pelo menos um dos campos obrigatórios que serão validados pela ordem listada acima, o primeiro campo válido encontrado definirá a **key** do registro.
-- Caso nenhum dos campos obrigatórios seja encontrado, o payload será marcado como **inválido**.
-- **campos adicionais** no payload podem ser livremente registrados na API de histórico do sistema, nessa etapa os dados entram "sujos".
+#### Lógica de Validação
 
-#### Criação de Task para Workers
-- Após a criação será automaticamente criada uma task direcionada aos workers do serviço
-- A task tem como objetivo:
-  - Validar todos os dados postados no payload
-  - Consultar fontes externas quando necessário para **enriquecer** os dados recebidos
-  - Garantir a qualidade e completude das informações processadas
+1. **Detecção da Chave:** O primeiro campo válido encontrado na ordem de prioridade determina a `key` do registro
+2. **Validação de Campos:** O payload deve conter pelo menos um dos campos obrigatórios (documento, celular, email)
+3. **Campos Adicionais:** Todos os campos extras podem ser livremente registrados em `additional_fields` (nesta etapa os dados entram "sujos")
+4. **Registro Inválido:** Caso nenhum campo obrigatório seja encontrado, o payload é marcado como inválido
 
-# 2° Etapa - Fila de processamento
+### Criação de Task para Workers
+
+Após a validação e armazenamento, uma task é automaticamente criada na fila para os workers do serviço com os seguintes objetivos:
+
+- **Validar** os dados postados no payload
+- **Enriquecer** os dados consultando fontes externas (tabela `sources` com coluna `enrich_data = true`)
+
+### Exemplo:
+
+| id  | status | name           | enrich_data |
+|-----|--------|----------------|-------------|
+| 1   | true   | Unknown        | false       |
+| 2   | true   | LIVE! Pro API  | false       |
+| 3   | true   | Manual Entry   | false       |
+| 4   | true   | CSV Import     | false       |
+| 5   | true   | Systextil      | false       |
+| 6   | true   | Cigam          | true        |
+| 7   | true   | E-commerce     | true        |
+| 8   | true   | App E-commerce | true        |
+| 9   | true   | Shoplive       | false       |
+| 10  | true   | App Experience | false       |
+| 11  | true   | LIVE! Pro      | true        |
+| 12  | true   | Omnichat       | true        |
+| 13  | true   | Zendesk        | true        |
+| 100 | true   | Dito           | false       |
+
+### Fluxo de Exemplo
+
+**Cenário:** Novo cadastro na Cigam
+
+1. **Dados disponíveis postados:**
+```json
+{
+  "data": {
+    "source": "cigam",
+    "interaction_type": "purchase",
+    "document": "11.222.333/0001-01"
+  }
+}
+```
+
+2. **Validação:** Payload é aceito (possui documento válido)
+3. **Armazenamento:** Registro criado no histórico com `key: "document"`
+4. **Worker acionado:** Task criada para buscar dados adicionais na Cigam
+5. **Enriquecimento:** Worker acessa API da Cigam e complementa o registro
+
+### Próximos Passos - Regras de Consolidação
+
+Nessa proxima etapa após consolidar o histórico validaremos informações críticas e elaboraremos as regras para unificação da ficha cadastral no banco.
+
+**Linha de Pensamento inicial** - Regras de Prioridade para Consolidação:
+
+1. **Documento (Prioridade Máxima)**
+   - Identificador principal (CPF)
+   - Precisa bater exatamente
+   - Dado mais confiável para identificação
+
+2. **Celular + Email (Alta Confiabilidade)**
+   - Ambos precisam coincidir
+   - Desempate: documento (decrescente) e ID (decrescente)
+
+3. **Celular + Nome (Confiabilidade Moderada)**
+   - Telefone e nome devem coincidir
+   - Desempate: documento (desc), email (desc), ID (desc)
+
+4. **Email + Nome (Confiabilidade Moderada)**
+   - Email e nome devem coincidir
+   - Desempate: documento (desc), celular (desc), ID (desc)
+
+5. **Apenas Nome (Prioridade Baixa)**
+   - Nome igual, mas apenas quando não há documento
+   - Evita erros com nomes comuns
+   - Usado apenas se nenhum outro identificador estiver disponível
+
+#### Exemplo de Consolidação
+
+**Situação:** Lead com cadastro básico → Cliente com cadastro completo
+
+**Registro Consolidado Inicial (Lead):**
+| id | merged_into_id | status | lead | document | document_format | name | first_name | birthday | gender | phone | email | source_id | update_source_id | created_at | updated_at | deleted_at |
+|----|----------------|--------|------|----------|-----------------|------|------------|----------|--------|-------|-------|---------|------------------|------------|------------|------------|
+| 123 | NULL | true | true | NULL | NULL | José Silva | José | 2001-07-04 | M | 5547999999999 | email@email.com | 1 | 1 | 2025-11-01 10:00:00 | 2025-11-01 10:00:00 | NULL |
+
+**Novo Registro (Pós-Venda):**
+
+| id | merged_into_id | status | lead | document | document_format | name | first_name | birthday | gender | phone | email | source_id | update_source_id | created_at | updated_at | deleted_at |
+|----|----------------|--------|------|----------|-----------------|------|------------|----------|--------|-------|-------|---------|------------------|------------|------------|------------|
+| 123 | 456 | false | true | NULL | NULL | José Silva | José | 2001-07-04 | M | 5547999999999 | email@email.com | 1 | 1 | 2025-11-01 10:00:00 | 2025-11-01 10:00:00 | NULL |
+| 456 | NULL | true | false | 70334596106 | CPF | José Silva | José | 2001-07-04 | M | 5547999999999 | email@email.com | 2 | 2 | 2025-11-01 11:00:00 | 2025-11-01 11:00:00 | NULL |
+
+**Resultado:** As regras identificam a similaridade (celular + email coincidem) e consolidam os registros, atualizando o status de lead para cliente.
+
+> 💡 **Nota:** As regras acima servem como linha de pensamento inicial. Com o histórico consolidado, poderemos elaborar regras mais precisas e eficazes.
+
+
+<!-- # 2° Etapa - Fila de processamento
 
 ## Arquitetura da Fila
 
@@ -134,29 +237,6 @@ Na validação inicial o payload sempre deve conter o **nome do sistema de orige
 - **Match por Telefone**: Consolidação baseada em números de telefone
 - **Match por Email**: Unificação através de endereços de email
 - **Fuzzy Matching**: Algoritmos para casos aproximados e similares
-<!-- 
-### Exemplo Ficha Consolidada
-```json
-{
-  
-  "data": {
-    "nome": "Nome Completo",
-    "documento": "CPF/CNPJ",
-    "telefone": "DDD + número",
-    "email": "endereço@email.com"
-  },
-  "historico_interacoes": [
-    {
-      "timestamp": "2025-11-20T19:11:33Z",
-      "sistema_origem": "zendesk",
-      "tipo_interacao": "suporte",
-      "dados_especificos": {}
-    }
-  ],
-  "ultima_atualizacao": "2025-11-20T19:11:33Z",
-  "score_engajamento": 0.85
-}
-``` -->
 
 ### Resolução de Conflitos
 - **Prioridade de Dados**: Estratégia para dados conflitantes entre fontes
@@ -228,4 +308,4 @@ Na validação inicial o payload sempre deve conter o **nome do sistema de orige
 ### Monitoramento e Otimização
 - **Dashboards Executivos**: Visão geral do performance do sistema
 - **Alertas Proativos**: Notificação de problemas antes do impacto ao usuário
-- **Otimização Contínua**: Melhorias baseadas em métricas e feedback
+- **Otimização Contínua**: Melhorias baseadas em métricas e feedback -->
