@@ -25,7 +25,7 @@ Na validação inicial, o payload deve obrigatoriamente conter:
 
 **Pelo menos um dos seguintes campos prioritários** (definirá a chave do registro), **Ordem de Prioridade (do mais alto ao mais baixo):**
 1. **Documento** - Documento Internacionalizado dos clientes (Prioridade Máxima)
-2. **Celular** - DDI + DDD + número (sempre usar "phone", nunca "telefone")
+2. **Celular** - DDI + DDD + número (sempre usar "Celular", nunca "telefone fixo")
 3. **Email** - endereço de email válido
 4. **Nome** - Nome completo (Fallback - apenas para ter registro básico)
 
