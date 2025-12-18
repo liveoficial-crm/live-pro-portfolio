@@ -21,7 +21,6 @@ Dispara o processamento de carrinhos para um período específico.
 | `date_end` | date | Sim | Data final do período |
 | `sellers` | array | Não | Lista de vendedores para filtrar |
 | `sellers.*` | string | Não | ID do vendedor |
-| `sync` | boolean | Não | Modo síncrono (padrão: false) |
 
 **Exemplo de Request:**
 ```json
@@ -29,7 +28,6 @@ Dispara o processamento de carrinhos para um período específico.
   "date_start": "2024-01-01",
   "date_end": "2024-01-31",
   "sellers": ["seller123", "seller456"],
-  "sync": false
 }
 ```
 
