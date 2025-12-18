@@ -1,4 +1,4 @@
-# Cart Audience API Documentation
+# API's Carrinhos Abandonados
 
 ## Visão Geral
 API para gerenciamento de audiências de carrinho, permitindo criar, processar e consultar carrinhos abandonados, além de integração com Omnichat.
