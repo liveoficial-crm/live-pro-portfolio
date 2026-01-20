@@ -218,3 +218,15 @@
 
    * Permite que o usuário informe livremente **valores consolidados de meta por vendedor**.
    * Utiliza o mesmo modelo de **Repeater do Step 1**, porém aplicado ao nível do vendedor.
+
+## Alterações em Painéis Existentes
+
+### Painel de Lojas
+
+* Replicar os **Steps 1 e 2** descritos anteriormente dentro do módulo de Lojas.
+* Se possível, **unificar os dois steps em uma única experiência**, simplificando o fluxo para o usuário.
+
+### Painel de Funcionários
+
+* Replicar os **Steps 1 e 2 do Painel de Lojas**, convertendo-os para a **visão de funcionários**.
+* Se possível, **unificar os steps em um único painel**, mantendo consistência de regras e comportamento.
