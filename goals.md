@@ -143,10 +143,8 @@
 
 ### Step 1 – Metas Gerais
 
-* Cadastro das metas por meio de um **Repeater**.
+* Cadastro das metas totais por meio de um **Repeater**.
 * Regras:
-
-  * Os valores devem respeitar a distribuição definida na tabela `goal_dailies`.
   * É permitido **apenas um registro por tipo de meta** (`goal_tier`) para cada loja.
 
 ### Step 2 – Metas Diárias
@@ -168,7 +166,7 @@
 * Quando o **Valor** é preenchido:
 
   * O sistema converte automaticamente o valor bruto em **percentual (Share)**.
-  * A conversão utiliza como base a **Meta de priority = 1** (meta principal) vinculada à loja.
+  * A conversão utiliza como base a **priority = 1** (meta principal) vinculada à loja.
 
 * **Regra de ajuste automático (limite de 100%)**:
 
