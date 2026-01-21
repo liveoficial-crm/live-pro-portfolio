@@ -10,11 +10,11 @@
 | -- | ---- | ----- | -------- | ---------- | ---------- | ---------- | ---------- |
 | 1  | 2025 | 10    | 1        |            | 2022-01-04 | 2022-01-04 |            |
 
+<sup>Vincula com a tabela `stores`</sup>
+
 **Unique Index:**
 
 	year + month + store_id
-
-<sup>Vincula com a tabela `stores`</sup>
 
 ---
 
@@ -48,11 +48,11 @@
 | 4  | Ultra Meta           | Contábil | 4        |              | 2022-01-04 | 2022-01-04 |            |
 | 5  | Meta Outlets 2024-05 | Contábil | 5        | 2            | 2022-01-04 | 2022-01-04 |            |
 
+<sup>`franchise_id` é opcional e indica quando a meta é específica para um tipo de loja</sup>
+
 **Unique Index:**
 
 	Name
-
-<sup>`franchise_id` é opcional e indica quando a meta é específica para um tipo de loja</sup>
 
 ---
 
