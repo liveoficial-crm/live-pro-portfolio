@@ -72,7 +72,7 @@
 
 ---
 
-## goal_sellers
+## goal_seller
 
 **Schema:** `live_cdp`
 
